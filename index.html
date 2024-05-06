@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Bars</title>
+    <style>* {font-family:arial;}
+.legend {position:absolute;margin:5px;right:0;}
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            gap: 20px;
+        }
+        .progress-bar {
+            width: 60%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 30px;
+position:relative;
+        }
+        .progress-fill {
+            background-color: #4caf50;
+            height: 100%;
+            transition: width 0.1s;
+            color: ;
+            text-align: center;
+            line-height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar"><span class="legend">Ano</span> <div id="year-bar" class="progress-fill">0%</div></div>
+        <div class="progress-bar"><span class="legend">Mês</span><div id="month-bar" class="progress-fill">0%</div></div>
+        <div class="progress-bar"><span class="legend">Semana</span><div id="week-bar" class="progress-fill">0%</div></div>
+        <div class="progress-bar"><span class="legend">Dia</span><div id="day-bar" class="progress-fill">0%</div></div>
+        <div class="progress-bar"><span class="legend">Hora</span><div id="hour-bar" class="progress-fill">0%</div></div>
+    </div>
+
+    <script>
+
+function updateProgressBars() {
+    const now = new Date();
+
+    // Início e fim do ano
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const endOfYear = new Date(now.getFullYear() + 1, 0, 1);
+
+    // Início e fim do mês
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    // Início e fim da semana (segunda a sábado)
+    const dayOffset = (now.getDay() + 6) % 7; // Ajuste para começar na segunda-feira
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - dayOffset);
+    startOfWeek.setHours(0, 0, 0, 0); // Início do dia para segunda-feira
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Ajuste para sábado
+    endOfWeek.setHours(23, 59, 59, 999); // Fim do dia para sábado
+
+    // Início e fim do dia
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(startOfDay.getDate() + 1);
+
+    // Início e fim da hora
+    const startOfHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
+    const endOfHour = new Date(startOfHour);
+    endOfHour.setHours(startOfHour.getHours() + 1);
+
+    // Cálculos das porcentagens
+    const yearProgress = ((now - startOfYear) / (endOfYear - startOfYear)) * 100;
+    const monthProgress = ((now - startOfMonth) / (endOfMonth - startOfMonth)) * 100;
+    const weekProgress = ((now - startOfWeek) / (endOfWeek - startOfWeek)) * 100;
+    const dayProgress = ((now - startOfDay) / (endOfDay - startOfDay)) * 100;
+    const hourProgress = ((now - startOfHour) / (endOfHour - startOfHour)) * 100;
+
+    document.querySelector('.legend:nth-child(1)').textContent = `Ano ${now.getFullYear()}`;
+
+
+    // Atualiza as barras de progresso
+    document.getElementById('year-bar').style.width = yearProgress.toFixed(6) + '%';
+    document.getElementById('month-bar').style.width = monthProgress.toFixed(6) + '%';
+    document.getElementById('week-bar').style.width = weekProgress.toFixed(5) + '%';
+    document.getElementById('day-bar').style.width = dayProgress.toFixed(6) + '%';
+    document.getElementById('hour-bar').style.width = hourProgress.toFixed(3) + '%';
+
+    document.getElementById('year-bar').textContent = yearProgress.toFixed(6) + '%';
+    document.getElementById('month-bar').textContent = monthProgress.toFixed(6) + '%';
+    document.getElementById('week-bar').textContent = weekProgress.toFixed(5) + '%';
+    document.getElementById('day-bar').textContent = dayProgress.toFixed(6) + '%';
+    document.getElementById('hour-bar').textContent = hourProgress.toFixed(3) + '%';
+
+    setTimeout(updateProgressBars, 1);
+}
+
+updateProgressBars();
+
+
+</script>
+</body>
+</html>
